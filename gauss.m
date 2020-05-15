@@ -63,7 +63,7 @@ function min_func_in_direction = min_func_in_direction(direction, x_start, dir_c
     x = direction(:,1);
     xs = x_start(:,1);
     ys = x_start(:,2);
-    min_line_x = fminbnd(@(x1) func_on_line(x1, x, xs, ys, dir_coeff), -10, 10);
+    min_line_x = fminbnd(@(x1) func_on_line(x1, x, xs, ys, dir_coeff), MIN_SEARCH_RANGE(:,1), MIN_SEARCH_RANGE(:,2));
 
     min_func_in_direction = min_line_x;
 end
