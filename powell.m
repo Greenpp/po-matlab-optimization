@@ -50,25 +50,25 @@ function get_new_point = get_new_point(x_start, direction)
     else
         m = 1;
     end
-    new_x = direct_min_func(direction, x_start, m);
+    new_x = min_func_in_direction(direction, x_start, m);
     new_point = direction .* new_x + x_start;
 
     get_new_point = new_point;
 end
 
-function min_func = min_func(x1, vx, xs, ys, m)
+function func_on_line = func_on_line(x1, vx, xs, ys, m)
     if vx ~= 0
-        min_func = (x1 + xs - 3)^2 + ((x1 * m) + ys - 4)^2 + (x1 + xs - (x1 * m) - ys + 1)^2;
+        func_on_line = (x1 + xs - 3)^2 + ((x1 * m) + ys - 4)^2 + (x1 + xs - (x1 * m) - ys + 1)^2;
     else
-        min_func = (xs - 3)^2 + ((x1 * m) + ys - 4)^2 + (xs - (x1 * m) - ys + 1)^2;
+        func_on_line = (xs - 3)^2 + ((x1 * m) + ys - 4)^2 + (xs - (x1 * m) - ys + 1)^2;
     end
 end
 
-function direct_min_func = direct_min_func(direction, x_start, m)
+function min_func_in_direction = min_func_in_direction(direction, x_start, dir_coeff)
     x = direction(:,1);
     xs = x_start(:,1);
     ys = x_start(:,2);
-    min_line_x = fminbnd(@(x1) min_func(x1, x, xs, ys, m), MIN_SEARCH_RANGE(:, 1), MIN_SEARCH_RANGE(:, 2));
+    min_line_x = fminbnd(@(x1) func_on_line(x1, x, xs, ys, dir_coeff), -10, 10);
 
-    direct_min_func = min_line_x;
+    min_func_in_direction = min_line_x;
 end
