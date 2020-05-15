@@ -6,6 +6,7 @@ x0 = [0 0];
 d1 = [1 0];
 d2 = [0 1];
 EPSILON = 0.01;
+MIN_SEARCH_RANGE = [-10 10]
 
 results = [x0]
 
@@ -19,7 +20,7 @@ while true
         d = d1;
     end
     
-    if norm(xn - x0) <= EPSILON
+    if condition_is_met(x0, xn)
         break;
     end
 
@@ -32,7 +33,11 @@ axis([0 6 0 6]);
 hold on;
 plot(results(:,1), results(:,2), 'r-', 'MarkerSize', 20)
 
-function get_min_point_in_direction = get_min_point_in_direction(x_start, direction)
+function condition_is_met = condition_is_met(x0, xn)
+    condition_is_met = norm(xn - x0) <= EPSILON
+end
+
+function get_new_point = get_new_point(x_start, direction)
     dx = direction(:,1);
     dy = direction(:,2);
     if dx ~= 0
@@ -43,7 +48,7 @@ function get_min_point_in_direction = get_min_point_in_direction(x_start, direct
     new_x = direct_min_func(direction, x_start, m);
     new_point = direction .* new_x + x_start;
 
-    get_min_point_in_direction = new_point;
+    get_new_point = new_point;
 end
 
 function min_func = min_func(x1, vx, xs, ys, m)
@@ -54,11 +59,11 @@ function min_func = min_func(x1, vx, xs, ys, m)
     end
 end
 
-function direct_min_func = direct_min_func(d, x_start, m)
-    x = d(:,1);
+function direct_min_func = direct_min_func(direction, x_start, m)
+    x = direction(:,1);
     xs = x_start(:,1);
     ys = x_start(:,2);
-    min_line_x = fminbnd(@(x1) min_func(x1, x, xs, ys, m), -10, 10);
+    min_line_x = fminbnd(@(x1) min_func(x1, x, xs, ys, m), MIN_SEARCH_RANGE(:, 1), MIN_SEARCH_RANGE(:, 2));
 
     direct_min_func = min_line_x;
 end
